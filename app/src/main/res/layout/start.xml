@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:paddingTop="0dp">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".4"
         android:text="Take Photo"
         android:id="@+id/button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/taxlogo"
+        android:textColor="#EFEFEF"
+        android:textSize="48dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Or"
+        android:id="@+id/textView"
+        android:textColor="#333333"
+        android:textSize="48dp"
+        android:textStyle="bold"
+        android:layout_weight=".2"
+        android:textAlignment="center"
+        android:gravity="center_vertical|center_horizontal|bottom|top" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Search By Registration Mark"
+        android:id="@+id/textView"
+        android:textColor="#333333"
+        android:textSize="42dp"
+        android:textStyle="bold"
+        android:layout_weight=".4"
+        android:textAlignment="center"
+        android:gravity="center_vertical|center_horizontal|bottom|top"
+        android:singleLine="false"
+        android:background="#CBCBCB" />
+
 </LinearLayout>
