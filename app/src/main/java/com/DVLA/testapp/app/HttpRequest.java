@@ -31,7 +31,7 @@ public class HttpRequest extends AsyncTask<Object, Void, String>
         String param = (String) params[0];
         this.t = (TextView) params[1];
         BufferedReader inBuffer = null;
-        String url = "http://www.google.com?vrm=" + param;
+        String url = "http://breezedave.cloudapp.net/api/values/" + param;
 
         String result = "fail";
         try {
@@ -71,7 +71,7 @@ public class HttpRequest extends AsyncTask<Object, Void, String>
     protected void onPostExecute(String page)
     {
 
-        //t.setText(page);
-        t.setText(statusCode.toString());
+        t.setText(page);
+        //t.setText(statusCode.toString());
     }
 }

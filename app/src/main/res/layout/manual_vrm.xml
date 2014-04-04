@@ -32,5 +32,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/resultHolder"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:textSize="28px"
+        android:textIsSelectable="false" />
 </LinearLayout>
