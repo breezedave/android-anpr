@@ -1,14 +1,11 @@
 package com.DVLA.testapp.app;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.os.Debug;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -16,12 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
-import org.joda.time.LocalTime;
 
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -31,6 +25,9 @@ import android.util.Log;
 import android.os.Environment;
 import android.net.Uri;
 import android.widget.Toast;
+
+import org.apache.http.protocol.HTTP;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -42,18 +39,39 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gotoStart();
+    }
+
+    protected void gotoStart() {
         setContentView(R.layout.start);
-        final Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button photoButton = (Button) findViewById(R.id.photoButton);
+        photoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dispatchTakePictureIntent();
+            }
+        });
+
+        final Button regButton = (Button) findViewById(R.id.regButton);
+        regButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                gotoManualVrm();
+            }
+        });
+    }
+
+    protected void gotoManualVrm() {
+        setContentView(R.layout.manual_vrm);
+        final Button searchVrm = (Button) findViewById(R.id.vrmButton);
+        searchVrm.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TextView textView = (TextView)findViewById(R.id.resultHolder);
+                new HttpRequest().execute("A1",textView);
             }
         });
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
         if (output != null) {
             Uri uri = Uri.fromFile(output);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
@@ -65,9 +83,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            setContentView(R.layout.activity_main);
-            //Toast toast = Toast.makeText(getApplicationContext(),output.getPath(),10000);
-            //toast.show();
+            setContentView(R.layout.view_photo);
 
             Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
 
@@ -110,20 +126,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStorageDirectory();
+        File storageDir = new File (Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed");
+        storageDir.mkdirs();
+
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
-
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        Log.d("imgPath",mCurrentPhotoPath);
         return image;
     }
 
@@ -143,22 +157,15 @@ public class MainActivity extends ActionBarActivity {
         if(bWidth > maxWidth) {
             scaling = scaling * (maxWidth/bWidth);
         }
-
         if(bHeight > maxHeight) {
             scaling = scaling * (maxHeight/bHeight);
         }
-
         Integer intWidth = (int)Math.floor(bWidth);
         Integer intHeight = (int)Math.floor(bHeight);
-
         Matrix matrix = new Matrix();
         matrix.postScale(scaling,scaling);
-        if(orientation==6){
-            matrix.postRotate(90);
-        }
-        if(orientation==3){
-            matrix.postRotate(180);
-        }
+        if(orientation==6){matrix.postRotate(90);}
+        if(orientation==3){matrix.postRotate(180);}
         Bitmap scaledBitmap = null;
         scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, intWidth, intHeight, matrix, true);
         BitmapDrawable result = new BitmapDrawable(scaledBitmap);
