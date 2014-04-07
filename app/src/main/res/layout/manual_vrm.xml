@@ -35,4 +35,37 @@
         android:layout_gravity="center_horizontal"
         android:textSize="28px"
         android:textIsSelectable="false" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="-130dp"
+        android:background="#727272"
+        android:id="@+id/loadingFrame"
+        android:alpha="0.8">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Loading"
+            android:id="@+id/resultHolder"
+            android:layout_gravity="center_horizontal"
+            android:textSize="67px"
+            android:textIsSelectable="false"
+            android:layout_marginTop="200dp" />/>
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="180dp" />
+
+
+    </FrameLayout>
+
 </LinearLayout>

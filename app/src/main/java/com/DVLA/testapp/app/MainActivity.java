@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -27,14 +28,12 @@ import android.os.Environment;
 import android.net.Uri;
 import android.widget.Toast;
 
-import org.apache.http.protocol.HTTP;
-
 
 public class MainActivity extends ActionBarActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Integer orientation = 6;
-    File output = getFile();
+    File output;
     String mCurrentPhotoPath="";
 
     @Override
@@ -48,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
         final Button photoButton = (Button) findViewById(R.id.photoButton);
         photoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                output = getFile();
                 dispatchTakePictureIntent();
             }
         });
@@ -62,13 +62,16 @@ public class MainActivity extends ActionBarActivity {
 
     protected void gotoManualVrm() {
         setContentView(R.layout.manual_vrm);
+        final FrameLayout loadingFrame = (FrameLayout) findViewById(R.id.loadingFrame);
+        loadingFrame.setVisibility(View.GONE);
         final Button searchVrm = (Button) findViewById(R.id.vrmButton);
         searchVrm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 EditText editText = (EditText)findViewById(R.id.editText);
                 String param = editText.getText().toString();
                 TextView textView = (TextView)findViewById(R.id.resultHolder);
-                new HttpRequest().execute(param,textView);
+                loadingFrame.setVisibility(View.VISIBLE);
+                new HttpRequest().execute(param,textView,loadingFrame);
             }
         });
     }
@@ -193,4 +196,5 @@ public class MainActivity extends ActionBarActivity {
         }
         return null;
     }
+
 }

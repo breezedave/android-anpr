@@ -3,46 +3,42 @@ package com.DVLA.testapp.app;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import org.joda.time.DateTime;
+import org.json.JSONObject;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
 
-public class HttpRequest extends AsyncTask<Object, Void, String>
+public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
 {
     TextView t;
-    Integer statusCode = 0;
+    FrameLayout l;
+
     @Override
-    protected String doInBackground(Object... params)
+    protected vehRecord doInBackground(Object... params)
     {
         String param = (String) params[0];
         this.t = (TextView) params[1];
+        this.l = (FrameLayout) params[2];
         BufferedReader inBuffer = null;
         String url = "http://breezedave.cloudapp.net/api/values/" + param;
-
-        String result = "fail";
+        vehRecord result;
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpGet request = new HttpGet(url);
             HttpResponse httpResponse = httpClient.execute(request);
-            statusCode = httpResponse.getStatusLine().getStatusCode();
             inBuffer = new BufferedReader(
                     new InputStreamReader(
                             httpResponse.getEntity().getContent()));
-
             StringBuffer stringBuffer = new StringBuffer("");
             String line = "";
             String newLine = System.getProperty("line.separator");
@@ -51,11 +47,15 @@ public class HttpRequest extends AsyncTask<Object, Void, String>
             }
             inBuffer.close();
 
-            result = stringBuffer.toString();
+            JSONObject json = new JSONObject(stringBuffer.toString());
+            vehRecord vehicle = new vehRecord();
+            buildVehicle(json, vehicle);
+            result = vehicle;
 
         } catch(Exception e) {
             // Do something about exceptions
-            result = e.getMessage();
+            Log.i("Err",e.getMessage());
+            result = new vehRecord();
         } finally {
             if (inBuffer != null) {
                 try {
@@ -68,10 +68,23 @@ public class HttpRequest extends AsyncTask<Object, Void, String>
         return result;
     }
 
-    protected void onPostExecute(String page)
+    protected void onPostExecute(vehRecord vehRecord)
     {
-
-        t.setText(page);
+        l.setVisibility(View.GONE);
+        t.setText(vehRecord.getVRM());
         //t.setText(statusCode.toString());
+    }
+
+    public void buildVehicle(JSONObject json,vehRecord vehicle) {
+        try {
+            vehicle.VRM = json.get("VRM").toString();
+            vehicle.Make = json.get("Make").toString();
+            vehicle.Model = json.get("Model").toString();
+            vehicle.FirstReg = new DateTime(json.get("FirstReg").toString());
+            vehicle.Tax = new DateTime(json.get("Tax").toString());
+            vehicle.MOT = new DateTime(json.get("MOT").toString());
+        } catch (Exception e) {
+            Log.i("Error",e.getMessage());
+        }
     }
 }
