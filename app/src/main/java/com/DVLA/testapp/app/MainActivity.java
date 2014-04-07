@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -60,18 +62,26 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
+
+
     protected void gotoManualVrm() {
         setContentView(R.layout.manual_vrm);
-        final FrameLayout loadingFrame = (FrameLayout) findViewById(R.id.loadingFrame);
-        loadingFrame.setVisibility(View.GONE);
         final Button searchVrm = (Button) findViewById(R.id.vrmButton);
         searchVrm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                hideSoftKeyboard();
                 EditText editText = (EditText)findViewById(R.id.editText);
                 String param = editText.getText().toString();
-                TextView textView = (TextView)findViewById(R.id.resultHolder);
-                loadingFrame.setVisibility(View.VISIBLE);
-                new HttpRequest().execute(param,textView,loadingFrame);
+                setContentView(R.layout.results);
+                FrameLayout loadingFrame = (FrameLayout) findViewById(R.id.loadingFrame);
+                TextView VRM = (TextView) findViewById(R.id.VRM);
+                TextView Make = (TextView) findViewById(R.id.Make);
+                TextView Model = (TextView) findViewById(R.id.Model);
+                TextView FirstReg = (TextView) findViewById(R.id.FirstReg);
+                TextView Tax = (TextView) findViewById(R.id.Tax);
+                TextView MOT = (TextView) findViewById(R.id.MOT);
+                TextView Insured = (TextView) findViewById(R.id.Insured);
+                new HttpRequest().execute(param,VRM,Make,Model,FirstReg,Tax,MOT,Insured,loadingFrame);
             }
         });
     }
@@ -197,4 +207,10 @@ public class MainActivity extends ActionBarActivity {
         return null;
     }
 
+    public void hideSoftKeyboard() {
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
 }

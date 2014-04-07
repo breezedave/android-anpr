@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/resultsLayout"
+android:orientation="vertical" android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="VRM"
+            android:id="@+id/vrmLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/VRM"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Make"
+            android:id="@+id/makeLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/Make"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Model"
+            android:id="@+id/modelLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/Model"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="180dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="First Reg"
+            android:id="@+id/firstRegLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/FirstReg"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="240dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Tax"
+            android:id="@+id/taxLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/Tax"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="MOT"
+            android:id="@+id/motLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/MOT"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="360dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Insured"
+            android:id="@+id/insuredLabel"
+            android:layout_gravity="left|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/Insured"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="24dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#333333"
+        android:id="@+id/loadingFrame"
+        android:alpha="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Loading"
+            android:id="@+id/resultHolder"
+            android:layout_gravity="center_horizontal"
+            android:textSize="67px"
+            android:textIsSelectable="false"
+            android:layout_marginTop="200dp" />/>
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="180dp" />
+
+
+    </FrameLayout>
+
+
+</RelativeLayout>
