@@ -72,10 +72,10 @@ public class OpenCV extends Activity {
         Mat image;
         image = Highgui.imread(imgLoc);
 
-        Mat hsv_image = new Mat();
-        Imgproc.cvtColor(image, hsv_image, Imgproc.COLOR_RGB2HSV);
-
-        Highgui.imwrite(imgLoc, hsv_image);
+        Mat gray_image = new Mat();
+        Imgproc.cvtColor(image, gray_image, Imgproc.COLOR_RGB2GRAY);
+        Log.i("Gray","It's Gray Now");
+        Highgui.imwrite(imgLoc, gray_image);
 
      }
 }

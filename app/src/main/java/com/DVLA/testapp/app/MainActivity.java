@@ -107,19 +107,19 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setContentView(R.layout.view_photo);
 
-            Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
-
             try{
                 ExifInterface exif = new ExifInterface(output.getAbsolutePath());
                 orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
                 Log.d(" Orientation",orientation.toString());
 
-                OpenCV opencv = new OpenCV();
-                opencv.hsvConvert(output.getAbsolutePath());
-
             }catch(IOException e) {
                 e.printStackTrace();
             }
+
+            OpenCV opencv = new OpenCV();
+            opencv.hsvConvert(output.getAbsolutePath());
+
+            Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
 
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
             if(mImageView != null){
