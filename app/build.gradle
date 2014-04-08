@@ -2,7 +2,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
         minSdkVersion 8
@@ -17,10 +17,18 @@ android {
         }
     }
 }
-repositories { mavenCentral() }
+repositories {
+    mavenCentral()
+    maven { url 'http://maven2.javacv.googlecode.com/git/' }
+}
+
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
+    instrumentTestCompile 'junit:junit:4.4'
     compile 'joda-time:joda-time:2.3'
+    compile files('libs/javacpp.jar')
+    compile files('libs/javacv.jar')
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':libraries:opencv')
 }
 

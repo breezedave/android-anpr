@@ -1,0 +1,5 @@
+<!-- From: file:/C:/Users/breezed/AndroidStudioProjects/TestApp/libraries/opencv/AndroidManifest.xml -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2480" android:versionName="2.4.8" package="org.opencv">
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
+</manifest>

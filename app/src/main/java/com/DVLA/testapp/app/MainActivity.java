@@ -16,7 +16,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -28,7 +27,8 @@ import java.util.Date;
 import android.util.Log;
 import android.os.Environment;
 import android.net.Uri;
-import android.widget.Toast;
+
+import org.opencv.android.OpenCVLoader;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -41,6 +41,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!OpenCVLoader.initDebug()) {
+            Log.i("OpenCVLoader","Failed");
+        }
         gotoStart();
     }
 
@@ -61,8 +64,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
-
-
 
     protected void gotoManualVrm() {
         setContentView(R.layout.manual_vrm);
@@ -112,6 +113,10 @@ public class MainActivity extends ActionBarActivity {
                 ExifInterface exif = new ExifInterface(output.getAbsolutePath());
                 orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
                 Log.d(" Orientation",orientation.toString());
+
+                OpenCV opencv = new OpenCV();
+                opencv.hsvConvert(output.getAbsolutePath());
+
             }catch(IOException e) {
                 e.printStackTrace();
             }
