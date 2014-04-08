@@ -66,6 +66,10 @@ public class MainActivity extends ActionBarActivity {
 
     protected void gotoManualVrm() {
         setContentView(R.layout.manual_vrm);
+        setupResultsSearch();
+    }
+
+    protected void setupResultsSearch() {
         final Button searchVrm = (Button) findViewById(R.id.vrmButton);
         searchVrm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -85,6 +89,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -111,14 +116,11 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
-            TextView screenText = (TextView)findViewById(R.id.atextView);
-            if(screenText != null){
-                screenText.setText(output.getAbsolutePath() + " - " + orientation);
-            }
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
             if(mImageView != null){
                 scaleImageToView(mImageView,imageBitmap);
             }
+            setupResultsSearch();
         }
     }
 
