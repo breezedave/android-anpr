@@ -1,9 +1,12 @@
 package com.DVLA.testapp.app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.provider.MediaStore;
@@ -20,7 +23,11 @@ import android.widget.TextView;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,6 +36,7 @@ import android.os.Environment;
 import android.net.Uri;
 
 import org.opencv.android.OpenCVLoader;
+import org.opencv.objdetect.CascadeClassifier;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -116,8 +124,30 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
+            Context a = this;
+            AssetManager assets = a.getAssets();
+            CascadeClassifier cascade = new CascadeClassifier();
+
+            try {
+
+                FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/lbpcascade_frontalface.xml");
+                //FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/config.xml");
+                InputStream in = assets.open("lbpcascade_frontalface.xml");
+                //InputStream in = assets.open("config.xml");
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+
+            } catch (Exception e) {
+                Log.i("Failed","Full Failure");
+            }
+            cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/lbpcascade_frontalface.xml");
+            //cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/config.xml");
+
             OpenCV opencv = new OpenCV();
-            opencv.hsvConvert(output.getAbsolutePath());
+            opencv.hsvConvert(output.getAbsolutePath(),cascade);
 
             Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
 

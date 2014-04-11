@@ -1,30 +1,39 @@
 package com.DVLA.testapp.app;
 
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Core;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
+import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.WindowManager;
 
-import java.util.Arrays;
+import org.opencv.features2d.Features2d;
+import org.opencv.objdetect.*;
+
+
+
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+import android.view.MenuItem;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OpenCV extends Activity {
     private static final String  TAG                 = "OCVSample::Activity";
@@ -66,16 +75,30 @@ public class OpenCV extends Activity {
 
     public static int           viewMode = VIEW_MODE_RGBA;
 
-    protected void hsvConvert(String imgLoc) {
-
-
+    protected void hsvConvert(String imgLoc,CascadeClassifier cascade) {
         Mat image;
         image = Highgui.imread(imgLoc);
-
-        Mat gray_image = new Mat();
-        Imgproc.cvtColor(image, gray_image, Imgproc.COLOR_RGB2GRAY);
-        Log.i("Gray","It's Gray Now");
-        Highgui.imwrite(imgLoc, gray_image);
-
+        faceDetection(image,imgLoc,cascade);
+        //Mat gray_image = new Mat();
+        //Imgproc.cvtColor(image, gray_image, Imgproc.COLOR_RGB2GRAY);
+        //Log.i("Gray","It's Gray Now");
+        //Highgui.imwrite(imgLoc, gray_image);
      }
+
+    public void faceDetection(Mat src,String imgLoc,CascadeClassifier cascade) {
+       MatOfRect storage = new MatOfRect();
+
+        cascade.detectMultiScale(src,storage); 
+
+        int total_Faces = storage.toList().size();
+        Log.i("Total Face",storage.toList().toString());
+
+        List<MatOfPoint> x = new ArrayList<MatOfPoint>();
+        for(int i = 0; i < total_Faces; i++){
+            Rect r = storage.toList().get(i);
+            Core.rectangle(src,new Point(r.x,r.y),new Point(r.x+r.width,r.y+r.height),new Scalar(255,0,0),10);
+        }
+
+        Highgui.imwrite(imgLoc, src);
+    }
 }
