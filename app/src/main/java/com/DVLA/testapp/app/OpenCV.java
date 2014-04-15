@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OpenCV extends Activity {
@@ -93,12 +94,14 @@ public class OpenCV extends Activity {
         int total_Faces = storage.toList().size();
         Log.i("Total Face",storage.toList().toString());
 
-        List<MatOfPoint> x = new ArrayList<MatOfPoint>();
+        List<Rect> x = new ArrayList<Rect>();
         for(int i = 0; i < total_Faces; i++){
             Rect r = storage.toList().get(i);
-            Core.rectangle(src,new Point(r.x,r.y),new Point(r.x+r.width,r.y+r.height),new Scalar(255,0,0),10);
+            x.add(0,r);
         }
-
+        Collections.sort(x,new customCompare());
+        Rect r = x.get(0);
+        Core.rectangle(src,new Point(r.x,r.y),new Point(r.x+r.width,r.y+r.height),new Scalar(255,0,0),10);
         Highgui.imwrite(imgLoc, src);
     }
 }
