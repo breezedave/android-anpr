@@ -101,7 +101,9 @@ public class OpenCV extends Activity {
         }
         Collections.sort(x,new customCompare());
         Rect r = x.get(0);
-        Core.rectangle(src,new Point(r.x,r.y),new Point(r.x+r.width,r.y+r.height),new Scalar(255,0,0),10);
+
+        src = src.submat(r);
+
         Highgui.imwrite(imgLoc, src);
     }
 }

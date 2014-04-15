@@ -10,15 +10,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import android.os.AsyncTask;
@@ -68,7 +64,7 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
             JSONObject json = new JSONObject(stringBuffer.toString());
             vehRecord vehicle = new vehRecord();
             Log.i("Test",json.toString());
-            buildVehicle(json, vehicle);
+            getVehicle(json, vehicle);
             result = vehicle;
 
         } catch(Exception e) {
@@ -100,7 +96,7 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
 
     }
 
-    public void buildVehicle(JSONObject json,vehRecord vehicle) {
+    public void getVehicle(JSONObject json, vehRecord vehicle) {
         try {
             vehicle.VRM = json.get("VRM").toString();
             vehicle.Make = json.get("Make").toString();
