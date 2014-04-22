@@ -76,21 +76,27 @@ public class OpenCV extends Activity {
 
     public static int           viewMode = VIEW_MODE_RGBA;
 
-    protected void hsvConvert(String imgLoc,CascadeClassifier cascade) {
+    protected void imgConvert(String imgLoc,CascadeClassifier cascade) {
         Mat image;
         image = Highgui.imread(imgLoc);
-        faceDetection(image,imgLoc,cascade);
-        //Mat gray_image = new Mat();
-        //Imgproc.cvtColor(image, gray_image, Imgproc.COLOR_RGB2GRAY);
-        //Log.i("Gray","It's Gray Now");
-        //Highgui.imwrite(imgLoc, gray_image);
+        Mat gray_image = new Mat();
+        Size shrankSize = new Size();
+        shrankSize.height = 400;
+        shrankSize.width = (float) 400 / image.height() * image.width();
+
+        Imgproc.resize(image,image,shrankSize);
+        Imgproc.cvtColor(image, gray_image, Imgproc.COLOR_RGB2GRAY);
+
+        Log.i("Gray", "It's Gray Now");
+        faceDetection(gray_image,image,imgLoc,cascade);
+//        Highgui.imwrite(imgLoc,gray_image);
      }
 
-    public void faceDetection(Mat src,String imgLoc,CascadeClassifier cascade) {
+    public void faceDetection(Mat srcGray, Mat src,String imgLoc,CascadeClassifier cascade) {
        MatOfRect storage = new MatOfRect();
-
-        cascade.detectMultiScale(src,storage); 
-
+        Log.i("Test","preScale");
+        cascade.detectMultiScale(srcGray,storage);
+        Log.i("Test","postScale");
         int total_Faces = storage.toList().size();
         Log.i("Total Face",storage.toList().toString());
 

@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -42,9 +43,9 @@ import org.opencv.objdetect.CascadeClassifier;
 public class MainActivity extends ActionBarActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    Integer orientation = 6;
     File output;
     String mCurrentPhotoPath="";
+    Integer orientation = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,11 +119,29 @@ public class MainActivity extends ActionBarActivity {
             try{
                 ExifInterface exif = new ExifInterface(output.getAbsolutePath());
                 orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                Log.d(" Orientation",orientation.toString());
+                Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
+                Matrix matrix = new Matrix();
+                Log.i("orientation",orientation.toString());
+                if(orientation==6){
+                    matrix.postRotate(90);
+                    Log.i("Rotate","90");
+                }
+                if(orientation==3){
+                    matrix.postRotate(180);
+                    Log.i("Rotate", "180");
+                }
+
+                Bitmap scaledBitmap = null;
+                scaledBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+                File file = new File(output.getAbsolutePath());
+                FileOutputStream fOut = new FileOutputStream(file);
+                scaledBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+                fOut.flush();
+                fOut.close();
 
             }catch(IOException e) {
                 e.printStackTrace();
-            }
+            } 
 
             Context a = this;
             AssetManager assets = a.getAssets();
@@ -147,14 +166,21 @@ public class MainActivity extends ActionBarActivity {
             //cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/config.xml");
 
             OpenCV opencv = new OpenCV();
-            opencv.hsvConvert(output.getAbsolutePath(),cascade);
-
-            Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
+            opencv.imgConvert(output.getAbsolutePath(), cascade);
 
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
-            if(mImageView != null){
-                scaleImageToView(mImageView,imageBitmap);
-            }
+
+            //BitmapDrawable result = scaleImageToView(mImageView,imageBitmap);
+            //mImageView.setImageDrawable(result);
+
+            Uri imgUri = Uri.parse(output.getAbsolutePath());
+            mImageView.setImageURI(imgUri);
+
+            //ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
+            //if(mImageView != null){
+            //   BitmapDrawable result = scaleImageToView(mImageView,imageBitmap);
+            //   view.setImageDrawable(result);
+            //}
             setupResultsSearch();
         }
     }
@@ -192,45 +218,6 @@ public class MainActivity extends ActionBarActivity {
 
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
-    }
-
-    private void scaleImageToView(ImageView view, Bitmap bitmap)
-    {
-        float maxWidth = 2000;
-        float maxHeight = 2000;
-        float bWidth = maxWidth;
-        float bHeight = maxHeight;
-        try {
-            bWidth = bitmap.getWidth();
-            bHeight = bitmap.getHeight();
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
-        float scaling = 1;
-        if(bWidth > maxWidth) {
-            scaling = scaling * (maxWidth/bWidth);
-        }
-        if(bHeight > maxHeight) {
-            scaling = scaling * (maxHeight/bHeight);
-        }
-        Integer intWidth = (int)Math.floor(bWidth);
-        Integer intHeight = (int)Math.floor(bHeight);
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaling,scaling);
-        if(orientation==6){matrix.postRotate(90);}
-        if(orientation==3){matrix.postRotate(180);}
-        Bitmap scaledBitmap = null;
-        scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, intWidth, intHeight, matrix, true);
-        BitmapDrawable result = new BitmapDrawable(scaledBitmap);
-
-        // Apply the scaled bitmap
-        view.setImageDrawable(result);
-    }
-
-    private int dpToPx(int dp)
-    {
-        float density = getApplicationContext().getResources().getDisplayMetrics().density;
-        return Math.round((float)dp * density);
     }
 
     File getFile() {
