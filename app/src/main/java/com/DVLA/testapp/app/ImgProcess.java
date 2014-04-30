@@ -29,10 +29,8 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         this.mImageView = (ImageView) params[0];
         this.mTextView = (TextView) params[1];
 
-        String imgPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/test.jpg";
-
         List<String> found = new ArrayList<String>();
-        Bitmap processedBitmap = BitmapFactory.decodeFile(imgPath);
+        Bitmap processedBitmap = MainActivity.currResultBmp;
 
         TessBaseAPI tess = new TessBaseAPI();
         tess.init(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/", "eng",TessBaseAPI.OEM_TESSERACT_ONLY);

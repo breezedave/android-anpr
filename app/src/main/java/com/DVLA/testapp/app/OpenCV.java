@@ -84,14 +84,12 @@ public class OpenCV extends Activity {
     public static int           viewMode = VIEW_MODE_RGBA;
 
     //protected void imgConvert(String imgLoc,CascadeClassifier cascade) {
-    protected Bitmap imgConvert(String imgLoc) {
+    protected Bitmap imgConvert(Bitmap img) {
         //Scalar min = new Scalar(0, 0, 0, 140);//BGR-A
         //Scalar max= new Scalar(0, 0, 0, 200);//BGR-A
 
-        Mat image;
-        List<String> listReg = new ArrayList<String>();
-        Mat processedImg = new Mat();
-        image = Highgui.imread(imgLoc);
+        Mat image = new Mat();
+        Utils.bitmapToMat(img,image);
         Mat gray_image = new Mat();
         Size shrankSize = new Size();
         shrankSize.height = 1500;

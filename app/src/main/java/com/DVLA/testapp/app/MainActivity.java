@@ -120,12 +120,12 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bitmap scaledBitmap = null;
+        String imgPath = output.getAbsolutePath();
+        imgPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/test.jpg"; // Dummy File
 
-        //String imgPath = output.getAbsolutePath();
-        String imgPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/test.jpg";
+        createTrainedData();
 
-        Context a = this;
-        AssetManager assets = a.getAssets();
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setContentView(R.layout.view_photo);
 
@@ -154,35 +154,13 @@ public class MainActivity extends ActionBarActivity {
                     matrix.postRotate(180);
                     Log.i("Rotate", "180");
                 }
-
-                Bitmap scaledBitmap = null;
                 scaledBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-                File file = new File(imgPath);
-                FileOutputStream fOut = new FileOutputStream(file);
-                scaledBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-                fOut.flush();
-                fOut.close();
-
-                try {
-                    FileOutputStream out2 = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/tessdata/eng.traineddata");
-                    InputStream in2 = assets.open("eng.traineddata");
-                    byte[] buffer2 = new byte[1024];
-                    int len2;
-                    while ((len2 = in2.read(buffer2)) != -1) {
-                        out2.write(buffer2, 0, len2);
-                    }
-
-                } catch (Exception e) {
-                    Log.i("Failed","Full Failure");
-                }
-
             }catch(IOException e) {
                 e.printStackTrace();
-            } 
+            }
 
             /*
             CascadeClassifier cascade = new CascadeClassifier();
-
             try {
                 FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/cascade.xml");
                 InputStream in = assets.open("cascade.xml");
@@ -191,7 +169,6 @@ public class MainActivity extends ActionBarActivity {
                 while ((len = in.read(buffer)) != -1) {
                     out.write(buffer, 0, len);
                 }
-
             } catch (Exception e) {
                 Log.i("Failed","Full Failure");
             }
@@ -199,9 +176,9 @@ public class MainActivity extends ActionBarActivity {
             */
 
             OpenCV opencv = new OpenCV();
-            Bitmap bmp = opencv.imgConvert(imgPath);
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
-            mImageView.setImageBitmap(bmp);
+            currResultBmp = opencv.imgConvert(scaledBitmap);
+            mImageView.setImageBitmap(currResultBmp);
 
             setupResultsSearch();
         }
@@ -290,4 +267,22 @@ public class MainActivity extends ActionBarActivity {
         TextView aTextView = (TextView)findViewById(R.id.editText);
         new ImgProcess().execute(aImageView,aTextView);
     }
+
+    public void createTrainedData() {
+        Context a = this;
+        AssetManager assets = a.getAssets();
+        try {
+            FileOutputStream out2 = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/tessdata/eng.traineddata");
+            InputStream in2 = assets.open("eng.traineddata");
+            byte[] buffer2 = new byte[1024];
+            int len2;
+            while ((len2 = in2.read(buffer2)) != -1) {
+                out2.write(buffer2, 0, len2);
+            }
+
+        } catch (Exception e) {
+            Log.i("Failed","Full Failure");
+        }
+    }
+
 }
