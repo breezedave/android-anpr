@@ -24,8 +24,8 @@
         android:layout_width="264dp"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
-        android:layout_gravity="center_horizontal"
-        android:maxLength="7" />
+        android:layout_gravity="center_horizontal"/>
+        <!--android:maxLength="7" -->
 
 
     <Button

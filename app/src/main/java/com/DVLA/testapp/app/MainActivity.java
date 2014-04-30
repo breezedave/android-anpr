@@ -257,7 +257,7 @@ public class MainActivity extends ActionBarActivity {
                 }
                 mImageView.setImageBitmap(currResultBmp);
             }
-            if(!killHandler) {
+            if(killHandler == false) {
                 mHandler.postDelayed(this,20);
             }
         }
