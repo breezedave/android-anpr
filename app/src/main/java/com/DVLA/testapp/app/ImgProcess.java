@@ -25,12 +25,15 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
     @Override
     protected String doInBackground(Object... params)
     {
+        MainActivity.killHandler = false;
         this.mImageView = (ImageView) params[0];
         this.mTextView = (TextView) params[1];
 
         String imgPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/test.jpg";
+
         List<String> found = new ArrayList<String>();
         Bitmap processedBitmap = BitmapFactory.decodeFile(imgPath);
+
         TessBaseAPI tess = new TessBaseAPI();
         tess.init(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/", "eng",TessBaseAPI.OEM_TESSERACT_ONLY);
         tess.setDebug(true);
@@ -73,6 +76,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
     }
     protected void onPostExecute(String firstResult)
     {
+        MainActivity.killHandler = true;
         mTextView.setText(firstResult);
     }
 }

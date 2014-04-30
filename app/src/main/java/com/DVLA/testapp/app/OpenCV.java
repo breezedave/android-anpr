@@ -83,7 +83,8 @@ public class OpenCV extends Activity {
 
     public static int           viewMode = VIEW_MODE_RGBA;
 
-    protected void imgConvert(String imgLoc,CascadeClassifier cascade) {
+    //protected void imgConvert(String imgLoc,CascadeClassifier cascade) {
+    protected Bitmap imgConvert(String imgLoc) {
         //Scalar min = new Scalar(0, 0, 0, 140);//BGR-A
         //Scalar max= new Scalar(0, 0, 0, 200);//BGR-A
 
@@ -98,17 +99,12 @@ public class OpenCV extends Activity {
         if(image.height() > 1500) { Imgproc.resize(image, image, shrankSize);}
 
         Imgproc.cvtColor(image,gray_image,Imgproc.COLOR_RGB2GRAY);
-
-            //color range of red like color
-
-        //Core.inRange(gray_image,min,max,gray_image);
-
-
         //Imgproc.GaussianBlur(image,image,new Size(7,7),3);
         //Imgproc.equalizeHist(image,image);
         Imgproc.threshold(gray_image,gray_image,127,255,0);
-
-        Highgui.imwrite(imgLoc,gray_image);
+        Bitmap bmp = Bitmap.createBitmap(gray_image.width(),gray_image.height(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(gray_image,bmp);
+        return bmp;
      }
 
     static public Bitmap getMini(Bitmap bmp,Integer x,Integer y,Integer w,Integer h) {
@@ -120,7 +116,7 @@ public class OpenCV extends Activity {
         return bmp2;
     }
 
-
+    // Not currently in use. Saved for later.
     public void faceDetection(Mat srcGray, Mat src,String imgLoc,CascadeClassifier cascade) {
        MatOfRect storage = new MatOfRect();
         Log.i("Starting Detection",new DateTime().toString());

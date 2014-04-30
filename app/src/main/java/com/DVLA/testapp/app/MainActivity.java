@@ -129,14 +129,13 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setContentView(R.layout.view_photo);
 
-            mHandler = new Handler();
-            mHandler.post(mUpdate);
-
             final Button processButton = (Button) findViewById(R.id.processButton);
             processButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     mImageView = (ImageView) findViewById(R.id.mImageView);
                     mTextView = (TextView) findViewById(R.id.editText);
+                    mHandler = new Handler();
+                    mHandler.post(mUpdate);
                     processImg();
                 }
             });
@@ -165,7 +164,6 @@ public class MainActivity extends ActionBarActivity {
                 fOut.close();
 
                 try {
-
                     FileOutputStream out2 = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/tessdata/eng.traineddata");
                     InputStream in2 = assets.open("eng.traineddata");
                     byte[] buffer2 = new byte[1024];
@@ -182,7 +180,7 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             } 
 
-
+            /*
             CascadeClassifier cascade = new CascadeClassifier();
 
             try {
@@ -198,24 +196,13 @@ public class MainActivity extends ActionBarActivity {
                 Log.i("Failed","Full Failure");
             }
             cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/cascade.xml");
+            */
 
             OpenCV opencv = new OpenCV();
-            opencv.imgConvert(imgPath, cascade);
-
-
+            Bitmap bmp = opencv.imgConvert(imgPath);
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
+            mImageView.setImageBitmap(bmp);
 
-            //BitmapDrawable result = scaleImageToView(mImageView,imageBitmap);
-            //mImageView.setImageDrawable(result);
-
-            Uri imgUri = Uri.parse(imgPath);
-            mImageView.setImageURI(imgUri);
-
-            //ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
-            //if(mImageView != null){
-            //   BitmapDrawable result = scaleImageToView(mImageView,imageBitmap);
-            //   view.setImageDrawable(result);
-            //}
             setupResultsSearch();
         }
     }
@@ -278,6 +265,7 @@ public class MainActivity extends ActionBarActivity {
     private Handler mHandler;
     private ImageView mImageView;
     private TextView mTextView;
+    static public Boolean killHandler;
     static public String currResultText;
     static public Bitmap currResultBmp;
     private Runnable mUpdate = new Runnable() {
@@ -292,7 +280,9 @@ public class MainActivity extends ActionBarActivity {
                 }
                 mImageView.setImageBitmap(currResultBmp);
             }
-            mHandler.postDelayed(this,20);
+            if(!killHandler) {
+                mHandler.postDelayed(this,20);
+            }
         }
     };
     private void processImg() {
