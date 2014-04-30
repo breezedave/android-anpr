@@ -27,6 +27,16 @@
         android:layout_gravity="center_horizontal"
         android:maxLength="7" />
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Process"
+        android:id="@+id/processButton"
+        android:layout_gravity="center_horizontal" />
+
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -30,7 +31,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.util.Log;
 import android.os.Environment;
@@ -38,6 +43,8 @@ import android.net.Uri;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.objdetect.CascadeClassifier;
+
+import com.googlecode.tesseract.android.*;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -113,13 +120,31 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //String imgPath = output.getAbsolutePath();
+        String imgPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/test.jpg";
+
+        Context a = this;
+        AssetManager assets = a.getAssets();
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setContentView(R.layout.view_photo);
 
+            mHandler = new Handler();
+            mHandler.post(mUpdate);
+
+            final Button processButton = (Button) findViewById(R.id.processButton);
+            processButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mImageView = (ImageView) findViewById(R.id.mImageView);
+                    mTextView = (TextView) findViewById(R.id.editText);
+                    processImg();
+                }
+            });
+
             try{
-                ExifInterface exif = new ExifInterface(output.getAbsolutePath());
+                ExifInterface exif = new ExifInterface(imgPath);
                 orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                Bitmap imageBitmap = BitmapFactory.decodeFile(output.getAbsolutePath());
+                Bitmap imageBitmap = BitmapFactory.decodeFile(imgPath);
                 Matrix matrix = new Matrix();
                 Log.i("orientation",orientation.toString());
                 if(orientation==6){
@@ -133,26 +158,36 @@ public class MainActivity extends ActionBarActivity {
 
                 Bitmap scaledBitmap = null;
                 scaledBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-                File file = new File(output.getAbsolutePath());
+                File file = new File(imgPath);
                 FileOutputStream fOut = new FileOutputStream(file);
                 scaledBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
                 fOut.flush();
                 fOut.close();
 
+                try {
+
+                    FileOutputStream out2 = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/tessdata/eng.traineddata");
+                    InputStream in2 = assets.open("eng.traineddata");
+                    byte[] buffer2 = new byte[1024];
+                    int len2;
+                    while ((len2 = in2.read(buffer2)) != -1) {
+                        out2.write(buffer2, 0, len2);
+                    }
+
+                } catch (Exception e) {
+                    Log.i("Failed","Full Failure");
+                }
+
             }catch(IOException e) {
                 e.printStackTrace();
             } 
 
-            Context a = this;
-            AssetManager assets = a.getAssets();
+
             CascadeClassifier cascade = new CascadeClassifier();
 
             try {
-
-                FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/lbpcascade_frontalface.xml");
-                //FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/config.xml");
-                InputStream in = assets.open("lbpcascade_frontalface.xml");
-                //InputStream in = assets.open("config.xml");
+                FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/cascade.xml");
+                InputStream in = assets.open("cascade.xml");
                 byte[] buffer = new byte[1024];
                 int len;
                 while ((len = in.read(buffer)) != -1) {
@@ -162,18 +197,18 @@ public class MainActivity extends ActionBarActivity {
             } catch (Exception e) {
                 Log.i("Failed","Full Failure");
             }
-            cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/lbpcascade_frontalface.xml");
-            //cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/config.xml");
+            cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/cascade.xml");
 
             OpenCV opencv = new OpenCV();
-            opencv.imgConvert(output.getAbsolutePath(), cascade);
+            opencv.imgConvert(imgPath, cascade);
+
 
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
 
             //BitmapDrawable result = scaleImageToView(mImageView,imageBitmap);
             //mImageView.setImageDrawable(result);
 
-            Uri imgUri = Uri.parse(output.getAbsolutePath());
+            Uri imgUri = Uri.parse(imgPath);
             mImageView.setImageURI(imgUri);
 
             //ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
@@ -208,7 +243,9 @@ public class MainActivity extends ActionBarActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = new File (Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed");
+        File tessData = new File (Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/tessdata");
         storageDir.mkdirs();
+        tessData.mkdirs();
 
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -236,5 +273,31 @@ public class MainActivity extends ActionBarActivity {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
+    }
+
+    private Handler mHandler;
+    private ImageView mImageView;
+    private TextView mTextView;
+    static public String currResultText;
+    static public Bitmap currResultBmp;
+    private Runnable mUpdate = new Runnable() {
+        @Override
+        public void run() {
+            if(currResultText!=null) {
+                if(currResultText==""){
+                    mTextView.setBackgroundColor(-1);
+                } else {
+                    mTextView.setBackgroundColor(-256);
+                    mTextView.setText(currResultText);
+                }
+                mImageView.setImageBitmap(currResultBmp);
+            }
+            mHandler.postDelayed(this,20);
+        }
+    };
+    private void processImg() {
+        ImageView aImageView = (ImageView)findViewById(R.id.mImageView);
+        TextView aTextView = (TextView)findViewById(R.id.editText);
+        new ImgProcess().execute(aImageView,aTextView);
     }
 }
