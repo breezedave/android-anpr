@@ -140,4 +140,40 @@ public class OpenCV extends Activity {
 
         Highgui.imwrite(imgLoc, src);
     }
+
+    static public Bitmap drawRect(Bitmap src, List<boxLetter> boxes){
+        Mat matSrc = new Mat();
+        Utils.bitmapToMat(src,matSrc);
+        for(boxLetter box:boxes) {
+            Core.rectangle(matSrc,new Point(box.x1,box.y1), new Point(box.x2,box.y2),new Scalar(255,0,0),2);
+        }
+        Utils.matToBitmap(matSrc,src);
+        return src;
+    }
+
+    static public Bitmap clearFlatColors(Bitmap src, Integer xMin, Integer xMax) {
+        Mat matSrc = new Mat();
+        Utils.bitmapToMat(src,matSrc);
+        Integer y = 0;
+        Integer h = matSrc.height();
+        Integer x = Math.min(xMin,matSrc.width());
+        Integer w = Math.min(xMax-xMin,matSrc.width());
+        Integer i,i2;
+        for(i=y; i<h;i++) {
+            Boolean allBlack = true;
+            for(i2=x;i2<w;i2++) {
+                double[] pix = matSrc.get(i,i2);
+                if(pix[0]==255) { allBlack = false;}
+            }
+            if(allBlack == true) {
+                Core.rectangle(matSrc,new Point(0,i),new Point(matSrc.width(),i),new Scalar(255,255,255),1);
+            }
+        }
+
+
+
+        Utils.matToBitmap(matSrc,src);
+        return src;
+    }
+
 }

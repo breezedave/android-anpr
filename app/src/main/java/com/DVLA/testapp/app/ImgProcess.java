@@ -69,11 +69,60 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         currTxt = tess.getUTF8Text();
         Log.i("Txt: ",currTxt);
         String letters = tess.getBoxText(0);
+
+        histCountBox boxCoord = letterCleanse(letters);
+
+        MainActivity.currResultBmp = chosen;
+        MainActivity.currResultText= currTxt;
+
+        //Integer thisX = Math.max(0,boxCoord.xMin*2/3);
+        Integer thisX = 0;
+        Integer thisY = Math.max(0,boxCoord.y1);
+        //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
+        Integer thisW = processedBitmap.getWidth();
+        Integer thisH =  (boxCoord.y2 - boxCoord.y1)*2;
+        Log.i("histBox: ",thisX + " " + thisY + " " + thisW + " " + thisH);
+
+        Bitmap histBox = OpenCV.getMini(processedBitmap,thisX, thisY, thisW,thisH);
+        histBox = OpenCV.clearFlatColors(histBox, boxCoord.xMin, boxCoord.xMax);
+        MainActivity.currResultBmp = histBox;
+        MainActivity.currResultText= currTxt;
+
+        tess.setImage(histBox);
+        letters = tess.getBoxText(0);
+
+        histCountBox boxCoord2 = letterCleanse(letters);
+        histBox = OpenCV.drawRect(histBox,boxCoord2.boxLetterList);
+        String result = "";
+        for(boxLetter b:boxCoord2.boxLetterList){
+            result += b.letter;
+        }
+        currTxt = result;
+
+        Log.i("Txt: ",currTxt);
+        if(currTxt.length()>0){
+            MainActivity.currResultBmp = histBox;
+            MainActivity.currResultText= currTxt;
+            return currTxt;
+        }
+        return "Not Fnd";
+    }
+
+    protected void onPostExecute(String firstResult)
+    {
+        if(firstResult != null){
+            mTextView.setText(firstResult);
+        }
+        MainActivity.killHandler = true;
+    }
+
+    public histCountBox letterCleanse(String letters) {
         List<boxLetter> boxLetters = new ArrayList<boxLetter>();
         for(String ltr:letters.split("\\r?\\n")){
             //Log.i("boxLetters: ",ltr);
             boxLetter box = new boxLetter();
             String[] lst = ltr.split(" ");
+            box.letter = lst[0];
             box.x1 = Integer.parseInt(lst[1]);
             box.y1 = Integer.parseInt(lst[2]);
             box.x2 = Integer.parseInt(lst[3]);
@@ -82,14 +131,13 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
                 boxLetters.add(box);
             }
         }
-
         List<histCountBox> histCountList = new ArrayList<histCountBox>();
         histCountList.add(new histCountBox());
         for(boxLetter box:boxLetters){
             Boolean found=false;
             for(histCountBox hist:histCountList) {
-                if(box.y1 * 1.0 >= hist.y1 * -1.5 && box.y1 * 1.0 <= hist.y1 * 1.5) {
-                    if(box.y2 * 1.0 >= hist.y2 * -1.5 && box.y2 * 1.0 <= hist.y2 * 1.5) {
+                if(box.y1 * 1.0 >= hist.y1 * -1.02 && box.y1 * 1.0 <= hist.y1 * 1.02) {
+                    if(box.y2 * 1.0 >= hist.y2 * -1.02 && box.y2 * 1.0 <= hist.y2 * 1.02) {
                         found = true;
                         hist.volume++;
                         hist.boxLetterList.add(box);
@@ -107,118 +155,12 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
             }
         }
         Collections.sort(histCountList,new boxLetterComapre());
-        histCountBox boxCoord = histCountList.get(0);
-        Log.i("histBOxCOunt: ",histCountList.size()+"");
+
+        Log.i("histBOxCOunt: ", histCountList.size() + "");
         Log.i("histBox: ",histCountList.get(0).volume+"");
 
-        //Integer thisX = Math.max(0,boxCoord.xMin*2/3);
-        Integer thisX = 0;
-        Integer thisY = Math.max(0,boxCoord.y1);
-        //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
-        Integer thisW = processedBitmap.getWidth();
-        Integer thisH =  (boxCoord.y2 - boxCoord.y1)*2;
-        Log.i("histBox: ",thisX + " " + thisY + " " + thisW + " " + thisH);
-
-        Bitmap histBox = OpenCV.getMini(processedBitmap,thisX, thisY, thisW,thisH);
-
-        tess.setImage(histBox);
-        currTxt = tess.getUTF8Text();
-        Log.i("Txt: ",currTxt);
-        if(currTxt.length()>0){
-            MainActivity.currResultBmp = histBox;
-            MainActivity.currResultText= currTxt;
-            return currTxt;
-        }
-        return "notfound";
-        /*
-        Log.i("Post third: ",""+currTxt);
-        if(currTxt==""){return "";}
-        Bitmap chosen = OpenCV.getMini(processedBitmap,0,fileHeight/4 * chosenBit,fileWidth,fileHeight/2);
-        i = 0;
-        while(currMaxLen>0 && i< chosen.getHeight()-10 ) {
-            i+= 3;
-            Bitmap yShrink = OpenCV.getMini(chosen,0, i, chosen.getWidth(),chosen.getHeight()-i);
-            tess.setImage(yShrink);
-            currTxt = tess.getUTF8Text();
-            currMaxLen=currTxt.length();
-            MainActivity.currResultBmp = yShrink;
-            MainActivity.currResultText= "Text: "+currTxt;
-        }
-        chosen = OpenCV.getMini(chosen,0, i-3, chosen.getWidth(),chosen.getHeight()-(i-3));
-        tess.setImage(chosen);
-        currTxt = tess.getUTF8Text();
-        currMaxLen = currTxt.length();
-        Log.i("Post top shrink",""+currTxt);
-        MainActivity.currResultBmp = chosen;
-        MainActivity.currResultText = currTxt;
-        String lastText = currTxt;
-        i = 0;
-        while(lastText == currTxt && i< chosen.getHeight()-10 ) {
-            i+= 3;
-            Bitmap yShrink = OpenCV.getMini(chosen,0, 0, chosen.getWidth(),chosen.getHeight()-i);
-            tess.setImage(yShrink);
-            currTxt = tess.getUTF8Text();
-            currMaxLen=currTxt.length();
-            MainActivity.currResultBmp = yShrink;
-            MainActivity.currResultText= "Text: "+currTxt;
-        }
-        chosen = OpenCV.getMini(chosen,0, 0, chosen.getWidth(),chosen.getHeight()-(i-3));
-        tess.setImage(chosen);
-        currTxt = tess.getUTF8Text();
-        currMaxLen = currTxt.length();
-        Log.i("Post base shrink",""+currTxt);
-        MainActivity.currResultBmp = chosen;
-        MainActivity.currResultText = currTxt;
-
-
-        Log.i("currTxt: ",currTxt);
-        return currTxt;
-        */
-
-        // Loop method
-        /*
-        for(w=390;w<391;w+= 20){
-            for(h=100;h<101;h+= 20){
-                for(x=0; x < fileWidth - w; x += 5) {
-                    for(y=0;y < fileHeight - h;y += 5) {
-                        Bitmap bmp = OpenCV.getMini(processedBitmap,x,y,w,h);
-                        tess.setImage(bmp);
-                        recognizedText = tess.getUTF8Text();
-                        Pattern pattern = Pattern.compile("^[0-Z]{4,7}$");
-                        Matcher matcher = pattern.matcher(recognizedText);
-                        if(matcher.matches()) {
-                            Log.i("found: ", "" + found.size());
-                            found.add(recognizedText);
-                            MainActivity.currResultBmp = bmp;
-                            MainActivity.currResultText = recognizedText;
-                        } else {
-                            MainActivity.currResultBmp = bmp;
-                            MainActivity.currResultText = "";
-                        }
-                    }
-                }
-            }
-        }
-
-        for(String foundStr: found) {
-            Log.d("Found: ",foundStr);
-        }
-
-        tess.end();
-        String result = "";
-        if(found.size()>0) {
-            result = found.get(0).toString();
-        } else {
-            result = "";
-        }
-        return result;
-        */
+        return histCountList.get(0);
     }
-    protected void onPostExecute(String firstResult)
-    {
-        if(firstResult != null){
-            mTextView.setText(firstResult);
-        }
-        MainActivity.killHandler = true;
-    }
+
+
 }
