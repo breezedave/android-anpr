@@ -12,6 +12,8 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by breezed on 29/04/14.
@@ -34,8 +36,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         TessBaseAPI tess = new TessBaseAPI();
         tess.init(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/", "eng",TessBaseAPI.OEM_TESSERACT_ONLY);
         tess.setDebug(true);
-//        tess.setVariable("tessedit_char_whitelist", "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789");
-        tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_OSD);
+        tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_ONLY);
 
         String currTxt = "";
 
@@ -43,7 +44,6 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         tess.setImage(chosen);
         Log.i("BoxText: ",tess.getBoxText(0));
         String letters = tess.getBoxText(0);
-
         histCountBox boxCoord = letterCleanse(letters);
 
         if(boxCoord.volume == 0) {
@@ -51,10 +51,10 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
             return "Not Found";
         }
         Integer thisX = 0;
-        Integer thisY = Math.max(0,boxCoord.y1 -((boxCoord.y2 - boxCoord.y1)/2));
+        Integer thisY = Math.max(0,boxCoord.y1 -5);
         //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
         Integer thisW = chosen.getWidth();
-        Integer thisH =  Math.min(chosen.getHeight()-thisY,(boxCoord.y2 - boxCoord.y1)*2);
+        Integer thisH =  Math.min(chosen.getHeight()-thisY,(boxCoord.y2 - boxCoord.y1) +10);
 
         Bitmap histBox = OpenCV.getMini(chosen,thisX, thisY, thisW,thisH);
         MainActivity.currResultBmp = histBox;
@@ -73,8 +73,14 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         currTxt = result;
 
         if(currTxt.length()>0){
+            Pattern pattern = Pattern.compile("([A-H]|[J-Z]|[0-9])([A-Z]|[0-9]){0,5}([A-H]|[J-Z]|[0-9])");
+            Matcher matcher = pattern.matcher(currTxt);
+            if (matcher.find())
+            {
+                currTxt = matcher.group();
+            }
+            MainActivity.currResultText = currTxt;
             MainActivity.currResultBmp = histBox;
-            MainActivity.currResultText= currTxt;
             return currTxt;
         }
         return "Not Fnd";
@@ -82,9 +88,9 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
 
     protected void onPostExecute(String firstResult)
     {
+        Log.i("Txt1: ",firstResult);
         if(firstResult != null){
             mTextView.setText(firstResult);
-            Log.i("Txt: ",firstResult);
         }
         MainActivity.killHandler = true;
     }
@@ -112,7 +118,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         for(boxLetter box:boxLetters){
             Boolean found=false;
             for(histCountBox hist:histCountList) {
-                if((box.y2-box.y1) >= (hist.y2-hist.y1) -5 && (box.y2-box.y1) <= (hist.y2-hist.y1) +5) {
+                if((box.y2 >= hist.y2 - 10 && box.y2 <= hist.y2 +10)&&(box.y1 >= hist.y1 - 10 && box.y1 <= hist.y1 +10)) {
                         found = true;
                         hist.volume++;
                         hist.boxLetterList.add(box);
