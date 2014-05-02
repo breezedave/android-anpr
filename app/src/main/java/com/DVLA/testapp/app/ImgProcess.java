@@ -35,40 +35,35 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         tess.init(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/", "eng",TessBaseAPI.OEM_TESSERACT_ONLY);
         tess.setDebug(true);
         tess.setVariable("tessedit_char_whitelist", "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789");
-        tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_SINGLE_COLUMN);
+        tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_OSD);
 
-        Integer fileWidth = processedBitmap.getWidth();
-        Integer fileHeight = processedBitmap.getHeight();
-
-        Integer x,y,w,h,i;
-        String recognizedText = "";
-
-        //Split method
-        Integer chosenBit =0;
-        Integer currMaxLen = 0;
         String currTxt = "";
 
         Bitmap chosen = processedBitmap;
         tess.setImage(chosen);
-        currTxt = tess.getUTF8Text();
         Log.i("BoxText: ",tess.getBoxText(0));
         String letters = tess.getBoxText(0);
 
         histCountBox boxCoord = letterCleanse(letters);
 
+        if(boxCoord.volume == 0) {
+            Log.i("First Pass","No Letters Found");
+            return "Not Found";
+        }
         Integer thisX = 0;
-        Integer thisY = Math.max(0,boxCoord.y1);
+        Integer thisY = Math.max(0,boxCoord.y1 -((boxCoord.y2 - boxCoord.y1)/2));
         //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
-        Integer thisW = processedBitmap.getWidth();
+        Integer thisW = chosen.getWidth();
         Integer thisH =  (boxCoord.y2 - boxCoord.y1)*2;
 
-        Bitmap histBox = OpenCV.getMini(processedBitmap,thisX, thisY, thisW,thisH);
-        histBox = OpenCV.clearFlatColors(histBox, boxCoord.xMin, boxCoord.xMax);
+        Bitmap histBox = OpenCV.getMini(chosen,thisX, thisY, thisW,thisH);
         MainActivity.currResultBmp = histBox;
+        MainActivity.currResultText= "First Sweep";
+        histBox = OpenCV.clearFlatColors(histBox, boxCoord.xMin, boxCoord.xMax);
 
         tess.setImage(histBox);
         letters = tess.getBoxText(0);
-
+        Log.i("Second Sweep: ",letters);
         histCountBox boxCoord2 = letterCleanse(letters);
         histBox = OpenCV.drawRect(histBox,boxCoord2.boxLetterList);
         String result = "";
@@ -97,7 +92,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
     public histCountBox letterCleanse(String letters) {
         List<boxLetter> boxLetters = new ArrayList<boxLetter>();
         for(String ltr:letters.split("\\r?\\n")){
-
+            try {
             boxLetter box = new boxLetter();
             String[] lst = ltr.split(" ");
             box.letter = lst[0];
@@ -108,14 +103,17 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
             if(box.y2-box.y1>25){
                 boxLetters.add(box);
             }
+            } catch (Exception e) {
+                Log.i("Err: ",e.getMessage().toString());
+            }
         }
         List<histCountBox> histCountList = new ArrayList<histCountBox>();
         histCountList.add(new histCountBox());
         for(boxLetter box:boxLetters){
             Boolean found=false;
             for(histCountBox hist:histCountList) {
-                if(box.y1 * 1.0 >= hist.y1 * -1.02 && box.y1 * 1.0 <= hist.y1 * 1.02) {
-                    if(box.y2 * 1.0 >= hist.y2 * -1.02 && box.y2 * 1.0 <= hist.y2 * 1.02) {
+                if(box.y1 * 1.0 >= hist.y1 -4 && box.y1 * 1.0 <= hist.y1 +4) {
+                    if(box.y2 * 1.0 >= hist.y2 -4 && box.y2 * 1.0 <= hist.y2 +4) {
                         found = true;
                         hist.volume++;
                         hist.boxLetterList.add(box);

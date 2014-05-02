@@ -109,7 +109,7 @@ public class OpenCV extends Activity {
         Mat mat = new Mat();
         Bitmap bmp2 = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
         Utils.bitmapToMat(bmp,mat);
-        Mat mat2 = mat.submat(y,y+h,x,x+w);
+        Mat mat2 = mat.submat(mat.height()-(y+h),mat.height()-y,x,x+w);
         Utils.matToBitmap(mat2,bmp2);
         return bmp2;
     }
@@ -145,7 +145,7 @@ public class OpenCV extends Activity {
         Mat matSrc = new Mat();
         Utils.bitmapToMat(src,matSrc);
         for(boxLetter box:boxes) {
-            Core.rectangle(matSrc,new Point(box.x1,box.y1), new Point(box.x2,box.y2),new Scalar(255,0,0),2);
+            Core.rectangle(matSrc,new Point(box.x1,matSrc.height()-box.y1), new Point(box.x2,matSrc.height()-box.y2),new Scalar(255,0,0),2);
         }
         Utils.matToBitmap(matSrc,src);
         return src;
