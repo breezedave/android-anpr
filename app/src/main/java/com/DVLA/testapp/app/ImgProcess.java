@@ -29,12 +29,12 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
 
 
         Bitmap processedBitmap = null;
-        processedBitmap = MainActivity.currResultBmp;
+        processedBitmap = MainActivity.origBmp;
 
         TessBaseAPI tess = new TessBaseAPI();
         tess.init(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/", "eng",TessBaseAPI.OEM_TESSERACT_ONLY);
         tess.setDebug(true);
-        tess.setVariable("tessedit_char_whitelist", "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789");
+//        tess.setVariable("tessedit_char_whitelist", "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789");
         tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_OSD);
 
         String currTxt = "";
@@ -54,7 +54,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         Integer thisY = Math.max(0,boxCoord.y1 -((boxCoord.y2 - boxCoord.y1)/2));
         //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
         Integer thisW = chosen.getWidth();
-        Integer thisH =  (boxCoord.y2 - boxCoord.y1)*2;
+        Integer thisH =  Math.min(chosen.getHeight()-thisY,(boxCoord.y2 - boxCoord.y1)*2);
 
         Bitmap histBox = OpenCV.getMini(chosen,thisX, thisY, thisW,thisH);
         MainActivity.currResultBmp = histBox;
@@ -112,14 +112,12 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         for(boxLetter box:boxLetters){
             Boolean found=false;
             for(histCountBox hist:histCountList) {
-                if(box.y1 * 1.0 >= hist.y1 -4 && box.y1 * 1.0 <= hist.y1 +4) {
-                    if(box.y2 * 1.0 >= hist.y2 -4 && box.y2 * 1.0 <= hist.y2 +4) {
+                if((box.y2-box.y1) >= (hist.y2-hist.y1) -5 && (box.y2-box.y1) <= (hist.y2-hist.y1) +5) {
                         found = true;
                         hist.volume++;
                         hist.boxLetterList.add(box);
                         if(box.x1<hist.xMin){hist.xMin = box.x1;}
                         if(box.x2>hist.xMax){hist.xMax = box.x2;}
-                    }
                 }
             }
             if(!found){

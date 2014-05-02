@@ -1,5 +1,6 @@
 package com.DVLA.testapp.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -43,7 +44,6 @@ import android.net.Uri;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.objdetect.CascadeClassifier;
-
 import com.googlecode.tesseract.android.*;
 
 
@@ -129,6 +129,8 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setContentView(R.layout.view_photo);
 
+
+
             final Button processButton = (Button) findViewById(R.id.processButton);
             processButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -176,9 +178,9 @@ public class MainActivity extends ActionBarActivity {
             */
 
             OpenCV opencv = new OpenCV();
+            origBmp = opencv.imgConvert(scaledBitmap);
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
-            currResultBmp = opencv.imgConvert(scaledBitmap);
-            mImageView.setImageBitmap(currResultBmp);
+            mImageView.setImageBitmap(origBmp);
 
             setupResultsSearch();
         }
@@ -245,6 +247,7 @@ public class MainActivity extends ActionBarActivity {
     static public Boolean killHandler;
     static public String currResultText;
     static public Bitmap currResultBmp;
+    static public Bitmap origBmp;
     private Runnable mUpdate = new Runnable() {
         @Override
         public void run() {
