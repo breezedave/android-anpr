@@ -44,7 +44,7 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
         this.Loading = (FrameLayout) params[8];
 
         BufferedReader inBuffer = null;
-        String url = "http://breezedave.cloudapp.net/api/values/" + param;
+        String url = "http://breezedave.co.uk/api/values/" + param;
         vehRecord result;
         try {
             HttpClient httpClient = new DefaultHttpClient();

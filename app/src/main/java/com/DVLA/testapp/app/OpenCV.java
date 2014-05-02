@@ -156,8 +156,8 @@ public class OpenCV extends Activity {
         Utils.bitmapToMat(src,matSrc);
         Integer y = 0;
         Integer h = matSrc.height();
-        Integer x = Math.min(xMin,matSrc.width());
-        Integer w = Math.min(xMax-xMin,matSrc.width());
+        Integer x = Math.min(xMin, matSrc.width());
+        Integer w = Math.min(xMax - xMin, matSrc.width());
         Integer i,i2;
         for(i=y; i<h;i++) {
             Boolean allBlack = true;
@@ -169,9 +169,6 @@ public class OpenCV extends Activity {
                 Core.rectangle(matSrc,new Point(0,i),new Point(matSrc.width(),i),new Scalar(255,255,255),1);
             }
         }
-
-
-
         Utils.matToBitmap(matSrc,src);
         return src;
     }

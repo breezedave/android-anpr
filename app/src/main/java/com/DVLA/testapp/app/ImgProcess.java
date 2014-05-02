@@ -47,46 +47,24 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         Integer chosenBit =0;
         Integer currMaxLen = 0;
         String currTxt = "";
-        /*
-        for(i=0;i<3;i++){
-            Bitmap third = OpenCV.getMini(processedBitmap,0,fileHeight/4 * i,fileWidth,fileHeight/2);
-            tess.setImage(third);
-            String txt = tess.getUTF8Text();
-            Integer txtLen = txt.length();
-            Log.i("Third"+i,txt);
-            MainActivity.currResultBmp = third;
-            MainActivity.currResultText= "Text: "+txt;
-            if(txtLen >currMaxLen){
-                currMaxLen = txtLen;
-                chosenBit = i;
-            }
-        }
-        Bitmap chosen = OpenCV.getMini(processedBitmap,0,fileHeight/4 * chosenBit,fileWidth,fileHeight/2);
-        */
 
         Bitmap chosen = processedBitmap;
         tess.setImage(chosen);
         currTxt = tess.getUTF8Text();
-        Log.i("Txt: ",currTxt);
+        Log.i("BoxText: ",tess.getBoxText(0));
         String letters = tess.getBoxText(0);
 
         histCountBox boxCoord = letterCleanse(letters);
 
-        MainActivity.currResultBmp = chosen;
-        MainActivity.currResultText= currTxt;
-
-        //Integer thisX = Math.max(0,boxCoord.xMin*2/3);
         Integer thisX = 0;
         Integer thisY = Math.max(0,boxCoord.y1);
         //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
         Integer thisW = processedBitmap.getWidth();
         Integer thisH =  (boxCoord.y2 - boxCoord.y1)*2;
-        Log.i("histBox: ",thisX + " " + thisY + " " + thisW + " " + thisH);
 
         Bitmap histBox = OpenCV.getMini(processedBitmap,thisX, thisY, thisW,thisH);
         histBox = OpenCV.clearFlatColors(histBox, boxCoord.xMin, boxCoord.xMax);
         MainActivity.currResultBmp = histBox;
-        MainActivity.currResultText= currTxt;
 
         tess.setImage(histBox);
         letters = tess.getBoxText(0);
@@ -99,7 +77,6 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         }
         currTxt = result;
 
-        Log.i("Txt: ",currTxt);
         if(currTxt.length()>0){
             MainActivity.currResultBmp = histBox;
             MainActivity.currResultText= currTxt;
@@ -112,6 +89,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
     {
         if(firstResult != null){
             mTextView.setText(firstResult);
+            Log.i("Txt: ",firstResult);
         }
         MainActivity.killHandler = true;
     }
@@ -119,7 +97,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
     public histCountBox letterCleanse(String letters) {
         List<boxLetter> boxLetters = new ArrayList<boxLetter>();
         for(String ltr:letters.split("\\r?\\n")){
-            //Log.i("boxLetters: ",ltr);
+
             boxLetter box = new boxLetter();
             String[] lst = ltr.split(" ");
             box.letter = lst[0];
@@ -156,8 +134,8 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         }
         Collections.sort(histCountList,new boxLetterComapre());
 
-        Log.i("histBOxCOunt: ", histCountList.size() + "");
-        Log.i("histBox: ",histCountList.get(0).volume+"");
+        Log.i("Number of Hist Boxes: ", histCountList.size() + "");
+        Log.i("Letters in top Box: ",histCountList.get(0).volume+"");
 
         return histCountList.get(0);
     }
