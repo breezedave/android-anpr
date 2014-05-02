@@ -24,7 +24,6 @@ repositories {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
-    instrumentTestCompile 'junit:junit:4.4'
     compile 'joda-time:joda-time:2.3'
     compile files('libs/javacpp.jar')
     compile files('libs/javacv.jar')
