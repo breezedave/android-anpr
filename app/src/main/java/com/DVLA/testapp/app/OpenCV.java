@@ -95,10 +95,7 @@ public class OpenCV extends Activity {
         shrankSize.height = 1500;
         shrankSize.width = (float) shrankSize.height / image.height() * image.width();
         if(image.height() > 1500) { Imgproc.resize(image, image, shrankSize);}
-
         Imgproc.cvtColor(image,gray_image,Imgproc.COLOR_RGB2GRAY);
-        //Imgproc.GaussianBlur(image,image,new Size(7,7),3);
-        //Imgproc.equalizeHist(image,image);
         Imgproc.threshold(gray_image,gray_image,127,255,0);
         Bitmap bmp = Bitmap.createBitmap(gray_image.width(),gray_image.height(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(gray_image,bmp);
@@ -141,11 +138,11 @@ public class OpenCV extends Activity {
         Highgui.imwrite(imgLoc, src);
     }
 
-    static public Bitmap drawRect(Bitmap src, List<boxLetter> boxes){
+    static public Bitmap drawRect(Bitmap src, List<boxLetter> boxes,Integer offsetX,Integer offsetY){
         Mat matSrc = new Mat();
         Utils.bitmapToMat(src,matSrc);
         for(boxLetter box:boxes) {
-            Core.rectangle(matSrc,new Point(box.x1,matSrc.height()-box.y1), new Point(box.x2,matSrc.height()-box.y2),new Scalar(255,0,0),2);
+            Core.rectangle(matSrc,new Point(offsetX+box.x1,matSrc.height()-(offsetY +box.y1)), new Point(offsetX+box.x2,matSrc.height()-(offsetY+box.y2)),new Scalar(255,0,0),2);
         }
         Utils.matToBitmap(matSrc,src);
         return src;

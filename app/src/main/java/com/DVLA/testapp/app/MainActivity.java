@@ -3,6 +3,7 @@ package com.DVLA.testapp.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -71,8 +72,8 @@ public class MainActivity extends ActionBarActivity {
         final Button photoButton = (Button) findViewById(R.id.photoButton);
         photoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                output = getFile();
-                dispatchTakePictureIntent();
+                //output = getFile();
+                //dispatchTakePictureIntent();
             }
         });
 
@@ -83,19 +84,15 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
-
+    public Texture texture;
     protected void gotoManualVrm() {
         //setContentView(R.layout.manual_vrm);
         //setupResultsSearch();
         setContentView(R.layout.live_camera);
+        mHandler.post(mUpdate);
         TextureView textureView= (TextureView)findViewById(R.id.textureView);
-        Texture a = new Texture();
-        a.run(textureView);
-//
-
-
-
-
+        texture = new Texture();
+        texture.run(textureView);
     }
 
     protected void setupResultsSearch() {
@@ -119,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-
+    /*
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (output != null) {
@@ -144,6 +141,7 @@ public class MainActivity extends ActionBarActivity {
 
 
             final Button processButton = (Button) findViewById(R.id.processButton);
+
             processButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     mImageView = (ImageView) findViewById(R.id.mImageView);
@@ -173,22 +171,6 @@ public class MainActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
-            /*
-            CascadeClassifier cascade = new CascadeClassifier();
-            try {
-                FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/cascade.xml");
-                InputStream in = assets.open("cascade.xml");
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
-                }
-            } catch (Exception e) {
-                Log.i("Failed","Full Failure");
-            }
-            cascade.load(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/cascade.xml");
-            */
-
             OpenCV opencv = new OpenCV();
             origBmp = opencv.imgConvert(scaledBitmap);
             ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
@@ -197,6 +179,7 @@ public class MainActivity extends ActionBarActivity {
             setupResultsSearch();
         }
     }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -253,35 +236,37 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private Handler mHandler;
+
     private ImageView mImageView;
     private TextView mTextView;
-    static public Boolean killHandler;
+    static public Boolean killHandler = false;
     static public String currResultText;
     static public Bitmap currResultBmp;
     static public Bitmap origBmp;
+
+
+    Handler mHandler = new Handler();
     private Runnable mUpdate = new Runnable() {
         @Override
         public void run() {
-            if(currResultText!=null) {
-                if(currResultText==""){
-                    mTextView.setBackgroundColor(-1);
-                } else {
-                    mTextView.setBackgroundColor(-256);
-                    mTextView.setText(currResultText);
-                }
-                mImageView.setImageBitmap(currResultBmp);
-            }
-            if(killHandler == false) {
+            mImageView = (ImageView)findViewById(R.id.imageView);
+            mTextView = (TextView)findViewById(R.id.textView);
+            if(currResultBmp!=null) {mImageView.setImageBitmap(currResultBmp);}
+            if(currResultText!=null) {mTextView.setText(currResultText);}
+            //if(killHandler == false) {
                 mHandler.postDelayed(this,20);
-            }
+            //}
         }
     };
+
+
+    /*
     private void processImg() {
         ImageView aImageView = (ImageView)findViewById(R.id.mImageView);
         TextView aTextView = (TextView)findViewById(R.id.editText);
         new ImgProcess().execute(aImageView,aTextView);
     }
+    */
 
     public void createTrainedData() {
         Context a = this;

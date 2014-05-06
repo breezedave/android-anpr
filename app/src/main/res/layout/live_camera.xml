@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="800px"
+    android:layout_height="fill_parent"
     >
     <FrameLayout
         android:id="@+id/camera_preview"
@@ -10,19 +10,38 @@
         android:layout_height="fill_parent"
         android:layout_weight="1"
         >
+        <Button
+            android:id="@+id/button_capture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="Capture"
+
+            />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="370dp"
+            android:id="@+id/imageView"
+            android:layout_gravity="top"
+            />
 
         <TextureView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="90dp"
+            android:layout_height="110dp"
             android:id="@+id/textureView"
-            android:layout_gravity="center" />
+            android:layout_margin="1px"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/textView"
+            android:layout_marginBottom="50dp"
+            android:layout_gravity="center|bottom" />
     </FrameLayout>
 
-    <Button
-        android:id="@+id/button_capture"
-        android:text="Capture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        />
-</LinearLayout>
+
+</RelativeLayout>
