@@ -73,6 +73,11 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
         public void run() {
             if(!inUse) {
                 Bitmap bmp = texture.getBitmap();
+                if(bmp==null){
+                    killHandler=true;
+                    MainActivity.killHandler=true;
+                    return;
+                }
                 OpenCV opencv = new OpenCV();
                 TessBaseAPI tess = new TessBaseAPI();
 

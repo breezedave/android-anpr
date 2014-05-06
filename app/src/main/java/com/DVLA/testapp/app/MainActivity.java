@@ -49,18 +49,18 @@ import android.net.Uri;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.objdetect.CascadeClassifier;
+import org.w3c.dom.Text;
+
 import com.googlecode.tesseract.android.*;
 
 
 public class MainActivity extends ActionBarActivity {
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    File output;
-    String mCurrentPhotoPath="";
-    Integer orientation = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createFileStructure();
+        createTrainedData();
         if (!OpenCVLoader.initDebug()) {
             Log.i("OpenCVLoader","Failed");
         }
@@ -72,27 +72,57 @@ public class MainActivity extends ActionBarActivity {
         final Button photoButton = (Button) findViewById(R.id.photoButton);
         photoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //output = getFile();
-                //dispatchTakePictureIntent();
+                gotoLiveCamera();
             }
         });
 
         final Button regButton = (Button) findViewById(R.id.regButton);
         regButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                gotoManualVrm();
+                gotoManualVrm("");
             }
         });
     }
     public Texture texture;
-    protected void gotoManualVrm() {
-        //setContentView(R.layout.manual_vrm);
-        //setupResultsSearch();
+    protected void gotoManualVrm(String vrm) {
+        setContentView(R.layout.manual_vrm);
+        TextView textView = (TextView)findViewById(R.id.editText);
+        textView.setText(vrm);
+        setupResultsSearch();
+    }
+    protected void gotoLiveCamera() {
         setContentView(R.layout.live_camera);
         mHandler.post(mUpdate);
         TextureView textureView= (TextureView)findViewById(R.id.textureView);
         texture = new Texture();
         texture.run(textureView);
+
+        final Button imperfect = (Button) findViewById(R.id.imperfectVRM);
+        imperfect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TextView textView= (TextView)findViewById(R.id.textView);
+                gotoManualVrm(textView.getText().toString());
+            }
+        });
+
+        final Button perfect = (Button) findViewById(R.id.perfectVRM);
+        perfect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TextView textView= (TextView)findViewById(R.id.textView);
+                hideSoftKeyboard();
+                String param = textView.getText().toString();
+                setContentView(R.layout.results);
+                FrameLayout loadingFrame = (FrameLayout) findViewById(R.id.loadingFrame);
+                TextView VRM = (TextView) findViewById(R.id.VRM);
+                TextView Make = (TextView) findViewById(R.id.Make);
+                TextView Model = (TextView) findViewById(R.id.Model);
+                TextView FirstReg = (TextView) findViewById(R.id.FirstReg);
+                TextView Tax = (TextView) findViewById(R.id.Tax);
+                TextView MOT = (TextView) findViewById(R.id.MOT);
+                TextView Insured = (TextView) findViewById(R.id.Insured);
+                new HttpRequest().execute(param,VRM,Make,Model,FirstReg,Tax,MOT,Insured,loadingFrame);
+            }
+        });
     }
 
     protected void setupResultsSearch() {
@@ -116,71 +146,6 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    /*
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (output != null) {
-            Uri uri = Uri.fromFile(output);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
-            takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bitmap scaledBitmap = null;
-        String imgPath = output.getAbsolutePath();
-        imgPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/test.jpg"; // Dummy File
-
-        createTrainedData();
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            setContentView(R.layout.view_photo);
-
-
-
-            final Button processButton = (Button) findViewById(R.id.processButton);
-
-            processButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mImageView = (ImageView) findViewById(R.id.mImageView);
-                    mTextView = (TextView) findViewById(R.id.editText);
-                    mHandler = new Handler();
-                    mHandler.post(mUpdate);
-                    processImg();
-                }
-            });
-
-            try{
-                ExifInterface exif = new ExifInterface(imgPath);
-                orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                Bitmap imageBitmap = BitmapFactory.decodeFile(imgPath);
-                Matrix matrix = new Matrix();
-                Log.i("orientation",orientation.toString());
-                if(orientation==6){
-                    matrix.postRotate(90);
-                    Log.i("Rotate","90");
-                }
-                if(orientation==3){
-                    matrix.postRotate(180);
-                    Log.i("Rotate", "180");
-                }
-                scaledBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
-            }catch(IOException e) {
-                e.printStackTrace();
-            }
-
-            OpenCV opencv = new OpenCV();
-            origBmp = opencv.imgConvert(scaledBitmap);
-            ImageView mImageView = (ImageView)findViewById(R.id.mImageView);
-            mImageView.setImageBitmap(origBmp);
-
-            setupResultsSearch();
-        }
-    }
-    */
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -200,33 +165,11 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+    private void createFileStructure() {
         File storageDir = new File (Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed");
         File tessData = new File (Environment.getExternalStorageDirectory().getAbsolutePath() + "/Taxed/tessdata");
         storageDir.mkdirs();
         tessData.mkdirs();
-
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    File getFile() {
-        File photoFile = null;
-        try {
-            photoFile = createImageFile();
-            return photoFile;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
 
     public void hideSoftKeyboard() {
@@ -249,24 +192,19 @@ public class MainActivity extends ActionBarActivity {
     private Runnable mUpdate = new Runnable() {
         @Override
         public void run() {
-            mImageView = (ImageView)findViewById(R.id.imageView);
-            mTextView = (TextView)findViewById(R.id.textView);
-            if(currResultBmp!=null) {mImageView.setImageBitmap(currResultBmp);}
-            if(currResultText!=null) {mTextView.setText(currResultText);}
-            //if(killHandler == false) {
-                mHandler.postDelayed(this,20);
-            //}
+            try {
+                mImageView = (ImageView)findViewById(R.id.imageView);
+                mTextView = (TextView)findViewById(R.id.textView);
+                if(currResultBmp!=null) {mImageView.setImageBitmap(currResultBmp);}
+                if(currResultText!=null) {mTextView.setText(currResultText);}
+                if(killHandler == false) {
+                    mHandler.postDelayed(this, 20);
+                }
+            } catch (Exception e) {
+                Log.i("Err: ","Handler crapped out");
+            }
         }
     };
-
-
-    /*
-    private void processImg() {
-        ImageView aImageView = (ImageView)findViewById(R.id.mImageView);
-        TextView aTextView = (TextView)findViewById(R.id.editText);
-        new ImgProcess().execute(aImageView,aTextView);
-    }
-    */
 
     public void createTrainedData() {
         Context a = this;
