@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -16,6 +17,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -48,7 +52,6 @@ import com.googlecode.tesseract.android.*;
 
 
 public class MainActivity extends ActionBarActivity {
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     File output;
     String mCurrentPhotoPath="";
@@ -82,8 +85,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     protected void gotoManualVrm() {
-        setContentView(R.layout.manual_vrm);
-        setupResultsSearch();
+        //setContentView(R.layout.manual_vrm);
+        //setupResultsSearch();
+        setContentView(R.layout.live_camera);
+        TextureView textureView= (TextureView)findViewById(R.id.textureView);
+        Texture a = new Texture();
+        a.run(textureView);
+//
+
+
+
+
     }
 
     protected void setupResultsSearch() {
