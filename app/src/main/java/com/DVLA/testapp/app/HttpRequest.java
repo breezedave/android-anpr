@@ -28,6 +28,12 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
     {
         this.vehView = (vehRecView) params[0];
 
+        if(this.vehView.Param.length()==0) {
+            vehRecord result = new vehRecord();
+            result.VRM = "Not Found";
+            return result;
+        }
+
         BufferedReader inBuffer = null;
         String url = "http://breezedave.co.uk/api/values/" + this.vehView.Param;
         vehRecord result;

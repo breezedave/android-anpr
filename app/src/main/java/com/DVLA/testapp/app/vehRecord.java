@@ -30,19 +30,35 @@ public class vehRecord {
     }
 
     public DateTime getFirstReg() {
-        return FirstReg;
+        if(FirstReg!=null) {
+            return FirstReg;
+        } else {
+            return new DateTime(1900,1,1,1,1);
+        }
     }
 
     public DateTime getTax() {
-        return Tax;
+        if(Tax!=null) {
+            return Tax;
+        } else {
+            return new DateTime(1900,1,1,1,1);
+        }
     }
 
     public DateTime getMOT() {
-        return MOT;
+        if(MOT!=null) {
+            return MOT;
+        } else {
+            return new DateTime(1900,1,1,1,1);
+        }
     }
 
     public Boolean getInsured() {
-        return Insured;
+        if(Insured!=null) {
+            return Insured;
+        } else {
+            return false;
+        }
     }
 
     public Boolean isTaxed() {
