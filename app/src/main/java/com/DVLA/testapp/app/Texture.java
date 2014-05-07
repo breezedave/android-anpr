@@ -20,6 +20,10 @@ import java.io.IOException;
 public class Texture extends Activity implements TextureView.SurfaceTextureListener {
     private Camera mCamera;
     public TextureView texture;
+    static public Boolean killHandler=false;
+    static public Boolean inUse = false;
+    Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +52,24 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
         mHandler.postDelayed(getTextureBmap ,20);
     }
 
-    Handler mHandler;
-    Boolean killHandler=false;
-    static public Boolean inUse = false;
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+        // Ignored, the Camera does all the work for us
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        mCamera.stopPreview();
+        mCamera.release();
+        killHandler = true;
+        MainActivity.killHandler=true;
+        return true;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+    }
 
     public Runnable getTextureBmap = new Runnable() {
         @Override
@@ -83,23 +102,4 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
 
     };
 
-
-    @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        // Ignored, the Camera does all the work for us
-    }
-
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        mCamera.stopPreview();
-        mCamera.release();
-        killHandler = true;
-        MainActivity.killHandler=true;
-        return true;
-    }
-
-    @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
-    }
 }

@@ -35,7 +35,7 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
         }
 
         BufferedReader inBuffer = null;
-        String url = "http://breezedave.co.uk/api/values/" + this.vehView.Param;
+        String url = "http://breezedave.co.uk/IsItTaxed/api/values/" + this.vehView.Param;
         vehRecord result;
         try {
             HttpClient httpClient = new DefaultHttpClient();

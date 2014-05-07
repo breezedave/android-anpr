@@ -14,7 +14,7 @@ android:layout_height="match_parent">
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/imageView"
+            android:id="@+id/taxDisc"
             android:src="@drawable/taxdisc" />
 
         <TextView
