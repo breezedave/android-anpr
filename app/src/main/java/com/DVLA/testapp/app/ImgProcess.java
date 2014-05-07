@@ -37,7 +37,7 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         tess.setDebug(true);
         tess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_ONLY);
 
-        String currTxt = "";
+        String currTxt;
 
         Bitmap bmp = this.bmp;
         Bitmap chosen = this.processedBitmap;
@@ -52,12 +52,10 @@ public class ImgProcess extends AsyncTask<Object,String,String> {
         }
         Integer thisX = 0;
         Integer thisY = Math.max(0,boxCoord.y1 -5);
-        //Integer thisW = (boxCoord.xMax - boxCoord.xMin);
         Integer thisW = chosen.getWidth();
         Integer thisH =  Math.min(chosen.getHeight()-thisY,(boxCoord.y2 - boxCoord.y1) +10);
 
         Bitmap histBox = OpenCV.getMini(chosen,thisX, thisY, thisW,thisH);
-        //histBox = OpenCV.clearFlatColors(histBox, boxCoord.xMin, boxCoord.xMax);
 
         tess.setImage(histBox);
         letters = tess.getBoxText(0);

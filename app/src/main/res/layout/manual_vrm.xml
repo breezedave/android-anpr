@@ -14,7 +14,7 @@
     <EditText
         android:layout_width="264dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/vrmText"
 
         android:layout_gravity="center_horizontal"
         android:maxLength="7" />

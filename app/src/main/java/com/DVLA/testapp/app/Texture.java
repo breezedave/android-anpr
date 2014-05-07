@@ -3,20 +3,12 @@ package com.DVLA.testapp.app;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.TextureView;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -43,11 +35,6 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mCamera = Camera.open();
 
-        Camera.Size previewSize = mCamera.getParameters().getPreviewSize();
-        /*
-        myTexture.setLayoutParams(new FrameLayout.LayoutParams(
-                previewSize.width, previewSize.height, Gravity.CENTER));
-        */
         try {
             mCamera.setPreviewTexture(surface);
         } catch (IOException t) {
@@ -55,7 +42,6 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
         }
 
         mCamera.startPreview();
-        //myTexture.setAlpha(1.0f);
         texture.setRotation(90.0f);
 
         mHandler = new Handler();
@@ -63,8 +49,6 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
     }
 
     Handler mHandler;
-    Bitmap currResultBmp;
-    String currResultText;
     Boolean killHandler=false;
     static public Boolean inUse = false;
 
@@ -110,6 +94,7 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
         mCamera.stopPreview();
         mCamera.release();
         killHandler = true;
+        MainActivity.killHandler=true;
         return true;
     }
 

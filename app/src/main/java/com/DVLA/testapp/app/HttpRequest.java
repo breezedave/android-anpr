@@ -21,30 +21,15 @@ import android.os.AsyncTask;
 
 public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
 {
-    TextView VRM;
-    TextView Make;
-    TextView Model;
-    TextView FirstReg;
-    TextView Tax;
-    TextView MOT;
-    TextView Insured;
-    FrameLayout Loading;
+    vehRecView vehView;
 
     @Override
     protected vehRecord doInBackground(Object... params)
     {
-        String param = (String) params[0];
-        this.VRM = (TextView) params[1];
-        this.Make = (TextView) params[2];
-        this.Model = (TextView) params[3];
-        this.FirstReg = (TextView) params[4];
-        this.Tax = (TextView) params[5];
-        this.MOT = (TextView) params[6];
-        this.Insured = (TextView) params[7];
-        this.Loading = (FrameLayout) params[8];
+        this.vehView = (vehRecView) params[0];
 
         BufferedReader inBuffer = null;
-        String url = "http://breezedave.co.uk/api/values/" + param;
+        String url = "http://breezedave.co.uk/api/values/" + this.vehView.Param;
         vehRecord result;
         try {
             HttpClient httpClient = new DefaultHttpClient();
@@ -68,7 +53,6 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
             result = vehicle;
 
         } catch(Exception e) {
-            // Do something about exceptions
             Log.i("Err",e.getMessage());
             result = new vehRecord();
         } finally {
@@ -85,14 +69,14 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
 
     protected void onPostExecute(vehRecord vehicle)
     {
-        VRM.setText(vehicle.getVRM());
-        Make.setText(vehicle.getMake());
-        Model.setText(vehicle.getModel());
-        FirstReg.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getFirstReg()));
-        Tax.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getTax()));
-        MOT.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getMOT()));
-        Insured.setText(vehicle.getInsured().toString());
-        Loading.setVisibility(View.GONE);
+        vehView.VRM.setText(vehicle.getVRM());
+        vehView.Make.setText(vehicle.getMake());
+        vehView.Model.setText(vehicle.getModel());
+        vehView.FirstReg.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getFirstReg()));
+        vehView.Tax.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getTax()));
+        vehView.MOT.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getMOT()));
+        vehView.Insured.setText(vehicle.getInsured().toString());
+        vehView.LoadingFrame.setVisibility(View.GONE);
 
     }
 

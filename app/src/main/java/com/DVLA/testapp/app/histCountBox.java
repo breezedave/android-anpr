@@ -11,8 +11,6 @@ public class histCountBox {
     Integer y2 = 0;
     Integer xMin = 999999;
     Integer xMax = 0;
-    String strCount1 ="";
-    String strCount2 ="";
     Integer volume =0;
     List<boxLetter> boxLetterList = new ArrayList<boxLetter>();
 }

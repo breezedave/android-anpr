@@ -44,8 +44,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 public class OpenCV extends Activity {
-    private static final String  TAG                 = "OCVSample::Activity";
-
     public static final int      VIEW_MODE_RGBA      = 0;
     public static final int      VIEW_MODE_HIST      = 1;
     public static final int      VIEW_MODE_CANNY     = 2;
@@ -83,11 +81,7 @@ public class OpenCV extends Activity {
 
     public static int           viewMode = VIEW_MODE_RGBA;
 
-    //protected void imgConvert(String imgLoc,CascadeClassifier cascade) {
     protected Bitmap imgConvert(Bitmap img) {
-        //Scalar min = new Scalar(0, 0, 0, 140);//BGR-A
-        //Scalar max= new Scalar(0, 0, 0, 200);//BGR-A
-
         Mat image = new Mat();
         Utils.bitmapToMat(img,image);
         Mat gray_image = new Mat();
@@ -111,7 +105,18 @@ public class OpenCV extends Activity {
         return bmp2;
     }
 
+    static public Bitmap drawRect(Bitmap src, List<boxLetter> boxes,Integer offsetX,Integer offsetY){
+        Mat matSrc = new Mat();
+        Utils.bitmapToMat(src,matSrc);
+        for(boxLetter box:boxes) {
+            Core.rectangle(matSrc,new Point(offsetX+box.x1,matSrc.height()-(offsetY +box.y1)), new Point(offsetX+box.x2,matSrc.height()-(offsetY+box.y2)),new Scalar(255,0,0),2);
+        }
+        Utils.matToBitmap(matSrc,src);
+        return src;
+    }
+
     // Not currently in use. Saved for later.
+    /*
     public void faceDetection(Mat srcGray, Mat src,String imgLoc,CascadeClassifier cascade) {
        MatOfRect storage = new MatOfRect();
         Log.i("Starting Detection",new DateTime().toString());
@@ -132,22 +137,12 @@ public class OpenCV extends Activity {
             Core.rectangle(src,new Point(r.x,r.y),new Point(r.x+r.width,r.y+r.height),new Scalar(255,0,0),2);
         }
 
-        //removed obj only code for time being
-        //src = src.submat(r);
-
         Highgui.imwrite(imgLoc, src);
     }
+    */
 
-    static public Bitmap drawRect(Bitmap src, List<boxLetter> boxes,Integer offsetX,Integer offsetY){
-        Mat matSrc = new Mat();
-        Utils.bitmapToMat(src,matSrc);
-        for(boxLetter box:boxes) {
-            Core.rectangle(matSrc,new Point(offsetX+box.x1,matSrc.height()-(offsetY +box.y1)), new Point(offsetX+box.x2,matSrc.height()-(offsetY+box.y2)),new Scalar(255,0,0),2);
-        }
-        Utils.matToBitmap(matSrc,src);
-        return src;
-    }
-
+    //No Longer Used
+    /*
     static public Bitmap clearFlatColors(Bitmap src, Integer xMin, Integer xMax) {
         Mat matSrc = new Mat();
         Utils.bitmapToMat(src,matSrc);
@@ -169,5 +164,6 @@ public class OpenCV extends Activity {
         Utils.matToBitmap(matSrc,src);
         return src;
     }
+    */
 
 }
