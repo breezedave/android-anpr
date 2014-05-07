@@ -1,29 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Enter Registration Mark"
-        android:id="@+id/textView" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        >
 
-    <EditText
-        android:layout_width="264dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/vrmText"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_centerHorizontal="true"
+            android:text="Enter Registration Mark"
+            android:id="@+id/textView"
+        />
 
-        android:layout_gravity="center_horizontal"
-        android:maxLength="7" />
+        <EditText
+            android:layout_width="264dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/vrmText"
+            android:layout_marginTop="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:maxLength="7"
+        />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Find This Car"
-        android:id="@+id/vrmButton"
-        android:layout_gravity="center_horizontal" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find This Car"
+            android:id="@+id/vrmButton"
+            android:layout_marginTop="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+        />
 
-</LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
