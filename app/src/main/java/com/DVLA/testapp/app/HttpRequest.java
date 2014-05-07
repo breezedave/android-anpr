@@ -78,10 +78,9 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
         vehView.VRM.setText(vehicle.getVRM());
         vehView.Make.setText(vehicle.getMake());
         vehView.Model.setText(vehicle.getModel());
-        vehView.FirstReg.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getFirstReg()));
-        vehView.Tax.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getTax()));
-        vehView.MOT.setText(DateTimeFormat.forPattern("YYYY MMM dd").print(vehicle.getMOT()));
-        vehView.Insured.setText(vehicle.getInsured().toString());
+        vehView.Tax.setText(DateTimeFormat.forPattern("dd MM YY").print(vehicle.getTax()));
+        vehView.MOT.setText(vehicle.isMOTed());
+        vehView.Insured.setText(vehicle.getInsured());
         vehView.LoadingFrame.setVisibility(View.GONE);
 
     }
@@ -91,7 +90,6 @@ public class HttpRequest extends AsyncTask<Object, Void, vehRecord>
             vehicle.VRM = json.get("VRM").toString();
             vehicle.Make = json.get("Make").toString();
             vehicle.Model = json.get("Model").toString();
-            vehicle.FirstReg = new DateTime(json.get("FirstReg"));
             vehicle.Tax = new DateTime(json.get("Tax").toString());
             vehicle.MOT = new DateTime(json.get("MOT").toString());
             vehicle.Insured = json.getBoolean("Insured");

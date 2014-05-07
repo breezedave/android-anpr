@@ -12,7 +12,6 @@ public class vehRecord {
     public String VRM;
     public String Make;
     public String Model;
-    public DateTime FirstReg;
     public DateTime Tax;
     public DateTime MOT;
     public Boolean Insured;
@@ -27,14 +26,6 @@ public class vehRecord {
 
     public String getModel() {
         return Model;
-    }
-
-    public DateTime getFirstReg() {
-        if(FirstReg!=null) {
-            return FirstReg;
-        } else {
-            return new DateTime(1900,1,1,1,1);
-        }
     }
 
     public DateTime getTax() {
@@ -53,12 +44,13 @@ public class vehRecord {
         }
     }
 
-    public Boolean getInsured() {
+    public String getInsured() {
         if(Insured!=null) {
-            return Insured;
-        } else {
-            return false;
+            if(Insured==true){
+                return "Insured";
+            }
         }
+        return "No Insurance";
     }
 
     public Boolean isTaxed() {
@@ -71,21 +63,14 @@ public class vehRecord {
         }
     }
 
-    public Boolean isMOTed() {
-        if(getMOT() == null) {return false;}
+    public String isMOTed() {
+        if(getMOT() == null) {return "No MOT";}
         DateTime now = new DateTime().withTimeAtStartOfDay();
         if(getMOT().isAfter(now)) {
-            return true;
+            return "MOT";
         } else {
-            return false;
+            return "No MOT";
         }
-    }
-
-    public Integer vehicleAge() {
-        if(getFirstReg() == null) {return -1;}
-        DateTime now = new DateTime().withTimeAtStartOfDay();
-        Integer diff = new DateTime(now.getMillis() - getFirstReg().getMillis()).getYear();
-        return diff;
     }
 
 }

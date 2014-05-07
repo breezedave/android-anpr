@@ -184,7 +184,6 @@ public class MainActivity extends ActionBarActivity {
         vehView.VRM = (TextView) findViewById(R.id.VRM);
         vehView.Make = (TextView) findViewById(R.id.Make);
         vehView.Model = (TextView) findViewById(R.id.Model);
-        vehView.FirstReg = (TextView) findViewById(R.id.FirstReg);
         vehView.Tax = (TextView) findViewById(R.id.Tax);
         vehView.MOT = (TextView) findViewById(R.id.MOT);
         vehView.Insured = (TextView) findViewById(R.id.Insured);

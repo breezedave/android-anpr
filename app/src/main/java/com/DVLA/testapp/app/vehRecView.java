@@ -12,7 +12,6 @@ public class vehRecView {
     public TextView VRM;
     public TextView Make;
     public TextView Model;
-    public TextView FirstReg;
     public TextView Tax;
     public TextView MOT;
     public TextView Insured;
