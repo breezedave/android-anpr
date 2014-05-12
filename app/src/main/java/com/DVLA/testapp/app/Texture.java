@@ -38,6 +38,9 @@ public class Texture extends Activity implements TextureView.SurfaceTextureListe
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mCamera = Camera.open();
+        Camera.Parameters params = mCamera.getParameters();
+        params.setFocusMode("continuous-picture");
+        mCamera.setParameters(params);
 
         try {
             mCamera.setPreviewTexture(surface);
