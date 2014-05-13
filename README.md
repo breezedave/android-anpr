@@ -13,10 +13,10 @@ The OpenCV and Tesseract OCR libraries are used for image processing and OCR res
 Latest-Screenshots
 ==================
 
-![Start Screen](/Screenshots/Start.png?raw=true "Start Screen")
+[Start Screen](/Screenshots/Start.png "Start Screen")
 
-![Camera Screen](/Screenshots/Live.png?raw=true "Camera Screen")
+[Camera Screen](/Screenshots/Live.png "Camera Screen")
 
-![Manual Entry Screen](/Screenshots/Manual.png?raw=true "Manual Entry Screen")
+[Manual Entry Screen](/Screenshots/Manual.png "Manual Entry Screen")
 
-![Results Screen](/Screenshots/Results.png?raw=true "Results Screen")
+[Results Screen](/Screenshots/Results.png "Results Screen")
