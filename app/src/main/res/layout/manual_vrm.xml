@@ -1,45 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    >
 
-    <RelativeLayout
+    <Space
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="100dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"/>
+
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
         android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
         >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_centerHorizontal="true"
-            android:text="Enter Registration Mark"
-            android:id="@+id/textView"
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.1"
+            />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:background="#C7D9EB"
+            android:layout_weight="0.8">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_centerHorizontal="true"
+                android:text="@string/enterManual"
+                android:id="@+id/textView"
+                />
+
+            <EditText
+                android:layout_width="160dp"
+                android:layout_height="40dp"
+                android:id="@+id/vrmText"
+                android:gravity="center"
+                android:layout_marginTop="65dp"
+                android:textSize="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:background="#FFFFFF"
+                android:maxLength="7"
+                />
+
+            <Button
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:text="@string/findCar"
+                android:id="@+id/vrmButton"
+                android:layout_marginTop="125dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                />
+
+
+
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.1"
+            />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
         />
 
-        <EditText
-            android:layout_width="264dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/vrmText"
-            android:layout_marginTop="70dp"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:maxLength="7"
-        />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find This Car"
-            android:id="@+id/vrmButton"
-            android:layout_marginTop="120dp"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-        />
-
-    </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>
