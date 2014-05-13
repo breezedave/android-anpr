@@ -8,3 +8,15 @@ The app reads a (UK) number plate from a live camera stream, gives you the optio
 The app was designed as a proof of concept so has only been tested on a Galaxy S4.
 
 The OpenCV and Tesseract OCR libraries are used for image processing and OCR respectively.
+
+
+Latest-Screenshots
+==================
+
+![Start Screen](/Screenshots/Start.png?raw=true "Start Screen")
+
+![Camera Screen](/Screenshots/Live.png?raw=true "Camera Screen")
+
+![Manual Entry Screen](/Screenshots/Manual.png?raw=true "Manual Entry Screen")
+
+![Results Screen](/Screenshots/Results.png?raw=true "Results Screen")
