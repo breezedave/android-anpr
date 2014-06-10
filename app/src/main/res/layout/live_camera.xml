@@ -15,8 +15,8 @@
     <ImageView
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="#000000"
         android:id="@+id/imageView"
         />
@@ -76,7 +76,7 @@
         android:layout_height="110dp"
         android:id="@+id/textureView"
         android:layout_alignParentTop="true"
-        android:alpha="0.75"
+        android:alpha="0"
         />
 
 
